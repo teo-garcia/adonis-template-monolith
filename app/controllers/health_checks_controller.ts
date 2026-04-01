@@ -1,5 +1,6 @@
-import readinessService from '#services/readiness_service'
 import type { HttpContext } from '@adonisjs/core/http'
+
+import readinessService from '#services/readiness_service'
 
 export default class HealthChecksController {
   async live({ response }: HttpContext) {

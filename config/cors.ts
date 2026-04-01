@@ -1,5 +1,6 @@
-import env from '#start/env'
 import { defineConfig } from '@adonisjs/cors'
+
+import env from '#start/env'
 
 const corsConfig = defineConfig({
   enabled: env.get('CORS_ENABLED'),

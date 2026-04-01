@@ -1,7 +1,8 @@
-import env from '#start/env'
-import metricsService from '#services/metrics_service'
 import type { HttpContext } from '@adonisjs/core/http'
 import type { NextFn } from '@adonisjs/core/types/http'
+
+import metricsService from '#services/metrics_service'
+import env from '#start/env'
 
 export default class MetricsMiddleware {
   async handle(ctx: HttpContext, next: NextFn) {

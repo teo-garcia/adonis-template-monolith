@@ -11,7 +11,7 @@ interface RequestMetric {
 }
 
 const escapeLabel = (value: string) =>
-  value.replaceAll('\\', '\\\\').replaceAll('"', '\\"')
+  value.replaceAll('\\', '\\\\').replaceAll('"', String.raw`\"`)
 
 class MetricsService {
   #samples = new Map<string, MetricSample>()
@@ -50,13 +50,13 @@ class MetricsService {
         labels.route
       )}",status="${labels.status}"`
 
-      lines.push(`http_requests_total{${labelSet}} ${sample.count}`)
       lines.push(
+        `http_requests_total{${labelSet}} ${sample.count}`,
         `http_request_duration_seconds_sum{${labelSet}} ${sample.durationSecondsTotal.toFixed(
           6
-        )}`
+        )}`,
+        `http_request_duration_seconds_count{${labelSet}} ${sample.count}`
       )
-      lines.push(`http_request_duration_seconds_count{${labelSet}} ${sample.count}`)
     }
 
     return `${lines.join('\n')}\n`

@@ -1,12 +1,12 @@
-import { DateTime } from 'luxon'
 import { BaseModel, column } from '@adonisjs/lucid/orm'
+import { DateTime } from 'luxon'
 
 export const TASK_STATUSES = ['PENDING', 'IN_PROGRESS', 'COMPLETED'] as const
 
 export type TaskStatus = (typeof TASK_STATUSES)[number]
 
 export default class Task extends BaseModel {
-  static table = 'tasks'
+  static readonly table = 'tasks'
 
   @column({ isPrimary: true })
   declare id: number

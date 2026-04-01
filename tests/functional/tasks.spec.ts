@@ -1,5 +1,5 @@
-import db from '@adonisjs/lucid/services/db'
 import testUtils from '@adonisjs/core/services/test_utils'
+import db from '@adonisjs/lucid/services/db'
 import { test } from '@japa/runner'
 
 const API_PREFIX = '/api'
@@ -72,7 +72,7 @@ test.group('Tasks endpoints', (group) => {
     response.assertStatus(200)
     const payload = response.body()
     if (!Array.isArray(payload)) {
-      throw new Error('Expected filtered task response to be an array')
+      throw new TypeError('Expected filtered task response to be an array')
     }
     if (payload.length !== 1) {
       throw new Error(`Expected exactly one filtered task, received ${payload.length}`)

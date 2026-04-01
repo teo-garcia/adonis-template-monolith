@@ -1,7 +1,7 @@
-import { errors as vineErrors } from '@vinejs/vine'
 import { Exception } from '@adonisjs/core/exceptions'
-import { HttpContext, ExceptionHandler } from '@adonisjs/core/http'
+import { ExceptionHandler,HttpContext } from '@adonisjs/core/http'
 import app from '@adonisjs/core/services/app'
+import { errors as vineErrors } from '@vinejs/vine'
 
 export default class Handler extends ExceptionHandler {
   protected debug = !app.inProduction

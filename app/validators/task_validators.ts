@@ -1,5 +1,6 @@
-import { TASK_STATUSES } from '#models/task'
 import vine from '@vinejs/vine'
+
+import { TASK_STATUSES } from '#models/task'
 
 export const createTaskValidator = vine.compile(
   vine.object({

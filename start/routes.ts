@@ -15,7 +15,21 @@ const HealthChecksController = () => import('#controllers/health_checks_controll
 const MetricsController = () => import('#controllers/metrics_controller')
 const TasksController = () => import('#controllers/tasks_controller')
 const DocsController = () => import('#controllers/docs_controller')
-const apiPrefix = env.get('API_PREFIX').replace(/^\/+|\/+$/g, '')
+const trimSlashes = (value: string) => {
+  let start = 0
+  let end = value.length
+
+  while (value[start] === '/') {
+    start += 1
+  }
+
+  while (value[end - 1] === '/') {
+    end -= 1
+  }
+
+  return value.slice(start, end)
+}
+const apiPrefix = trimSlashes(env.get('API_PREFIX'))
 
 router.get('/', async () => {
   return {

@@ -6,7 +6,7 @@ class ReadinessService {
     try {
       await db.rawQuery('select 1 as health')
       return 'ok'
-    } catch (error) {
+    } catch {
       return 'error'
     }
   }
@@ -15,7 +15,7 @@ class ReadinessService {
     try {
       await redis.ping()
       return 'ok'
-    } catch (error) {
+    } catch {
       return 'error'
     }
   }

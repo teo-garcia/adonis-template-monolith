@@ -1,6 +1,7 @@
-import Task, { type TaskStatus } from '#models/task'
 import { Exception } from '@adonisjs/core/exceptions'
 import logger from '@adonisjs/core/services/logger'
+
+import Task, { type TaskStatus } from '#models/task'
 
 export interface TaskFilters {
   priority?: number

@@ -1,7 +1,8 @@
-import env from '#start/env'
-import metricsService from '#services/metrics_service'
 import { Exception } from '@adonisjs/core/exceptions'
 import type { HttpContext } from '@adonisjs/core/http'
+
+import metricsService from '#services/metrics_service'
+import env from '#start/env'
 
 export default class MetricsController {
   async index({ response }: HttpContext) {
