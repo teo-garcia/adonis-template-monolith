@@ -126,6 +126,18 @@ See `.env.example` and `.env.test.example` for the full set.
 
 ---
 
+## Shared Governance
+
+| Area               | Tooling                                             |
+| ------------------ | --------------------------------------------------- |
+| Dependency updates | Renovate                                            |
+| Issue intake       | GitHub issue templates                              |
+| Change review      | Pull request template                               |
+| CI                 | GitHub Actions for lint, typecheck, build, and test |
+| Security           | Trivy and `pnpm audit`                              |
+
+---
+
 ## Related Templates
 
 | Template                    | Description      |
