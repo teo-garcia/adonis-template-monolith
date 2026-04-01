@@ -11,7 +11,8 @@ import router from '@adonisjs/core/services/router'
 
 import env from '#start/env'
 
-const HealthChecksController = () => import('#controllers/health_checks_controller')
+const HealthChecksController = () =>
+  import('#controllers/health_checks_controller')
 const MetricsController = () => import('#controllers/metrics_controller')
 const TasksController = () => import('#controllers/tasks_controller')
 const DocsController = () => import('#controllers/docs_controller')

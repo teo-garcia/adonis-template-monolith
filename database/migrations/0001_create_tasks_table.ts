@@ -10,8 +10,14 @@ export default class extends BaseSchema {
       table.text('description').nullable()
       table.string('status', 32).notNullable().defaultTo('PENDING').index()
       table.integer('priority').notNullable().defaultTo(0).index()
-      table.timestamp('created_at', { useTz: true }).notNullable().defaultTo(this.now())
-      table.timestamp('updated_at', { useTz: true }).notNullable().defaultTo(this.now())
+      table
+        .timestamp('created_at', { useTz: true })
+        .notNullable()
+        .defaultTo(this.now())
+      table
+        .timestamp('updated_at', { useTz: true })
+        .notNullable()
+        .defaultTo(this.now())
     })
   }
 

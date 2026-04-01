@@ -14,8 +14,6 @@ export default class HealthChecksController {
 
   async index({ response }: HttpContext) {
     const report = await readinessService.healthReport()
-    return response
-      .status(report.status === 'ok' ? 200 : 503)
-      .send(report)
+    return response.status(report.status === 'ok' ? 200 : 503).send(report)
   }
 }

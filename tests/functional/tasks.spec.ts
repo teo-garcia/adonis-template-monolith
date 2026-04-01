@@ -36,10 +36,12 @@ test.group('Tasks endpoints', (group) => {
     getResponse.assertStatus(200)
     getResponse.assertBodyContains({ title: 'Task to mutate' })
 
-    const updateResponse = await client.patch(`${API_PREFIX}/tasks/${taskId}`).json({
-      status: 'IN_PROGRESS',
-      title: 'Updated task title',
-    })
+    const updateResponse = await client
+      .patch(`${API_PREFIX}/tasks/${taskId}`)
+      .json({
+        status: 'IN_PROGRESS',
+        title: 'Updated task title',
+      })
     updateResponse.assertStatus(200)
     updateResponse.assertBodyContains({
       status: 'IN_PROGRESS',
@@ -75,7 +77,9 @@ test.group('Tasks endpoints', (group) => {
       throw new TypeError('Expected filtered task response to be an array')
     }
     if (payload.length !== 1) {
-      throw new Error(`Expected exactly one filtered task, received ${payload.length}`)
+      throw new Error(
+        `Expected exactly one filtered task, received ${payload.length}`
+      )
     }
     if (payload[0]?.status !== 'IN_PROGRESS') {
       throw new Error('Expected filtered task status to be IN_PROGRESS')

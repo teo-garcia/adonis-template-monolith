@@ -19,9 +19,15 @@ export default await Env.create(new URL('../', import.meta.url), {
   APP_NAME: Env.schema.string(),
   APP_VERSION: Env.schema.string(),
   API_PREFIX: Env.schema.string(),
-  LOG_LEVEL: Env.schema.enum(
-    ['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent'] as const
-  ),
+  LOG_LEVEL: Env.schema.enum([
+    'fatal',
+    'error',
+    'warn',
+    'info',
+    'debug',
+    'trace',
+    'silent',
+  ] as const),
   DB_CONNECTION: Env.schema.enum(['postgres'] as const),
   DB_HOST: Env.schema.string({ format: 'host' }),
   DB_PORT: Env.schema.number(),
