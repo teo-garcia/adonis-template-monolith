@@ -1,0 +1,64 @@
+# =============================================================================
+# Docker Build Workflow (Template - Disabled by Default)
+# =============================================================================
+#
+# This workflow is disabled by default for this template repository.
+# It serves as a reference for setting up Docker builds in your own project.
+#
+# TO ENABLE:
+# 1. Uncomment the push/pull_request triggers below
+# 2. Configure your container registry (GHCR is pre-configured)
+# 3. Set push: true or use the conditional push logic
+# 4. Optionally enable multi-platform builds (linux/amd64,linux/arm64)
+#
+# =============================================================================
+
+name: Docker Build
+
+on:
+  # Uncomment these to enable automatic builds:
+  # push:
+  #   branches: [main, develop]
+  # pull_request:
+  #   branches: [main]
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v6
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: ./docker/Dockerfile
+          push: false
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          platforms: linux/amd64

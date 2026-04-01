@@ -1,0 +1,19 @@
+{
+  "extends": "@adonisjs/tsconfig/tsconfig.app.json",
+  "compilerOptions": {
+    "rootDir": "./",
+    "outDir": "./build",
+    "types": ["node"]
+  },
+  "include": [
+    "ace.js",
+    "adonisrc.ts",
+    "app/**/*.ts",
+    "bin/**/*.ts",
+    "config/**/*.ts",
+    "contracts/**/*.d.ts",
+    "database/**/*.ts",
+    "start/**/*.ts",
+    "tests/**/*.ts"
+  ]
+}
