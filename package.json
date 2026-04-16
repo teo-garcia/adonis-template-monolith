@@ -55,7 +55,7 @@
     "reflect-metadata": "^0.2.2"
   },
   "devDependencies": {
-    "@adonisjs/assembler": "^7.8.2",
+    "@adonisjs/assembler": "^8.0.0",
     "@adonisjs/tsconfig": "^1.4.0",
     "@commitlint/cli": "^20.1.0",
     "@commitlint/config-conventional": "^20.0.0",
