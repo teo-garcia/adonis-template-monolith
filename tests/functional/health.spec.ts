@@ -28,15 +28,28 @@ test.group('Health endpoints', () => {
     })
   })
 
-  test('reports docs discoverability', async ({ client }) => {
+  test('serves API docs', async ({ client }) => {
     const response = await client.get('/docs')
 
     response.assertStatus(200)
+    response.assertTextIncludes('SwaggerUIBundle')
+    response.assertTextIncludes('/swagger')
+  })
+
+  test('serves OpenAPI schema', async ({ client }) => {
+    const response = await client.get('/openapi.json')
+
+    response.assertStatus(200)
     response.assertBodyContains({
-      docs: {
-        enabled: false,
+      openapi: '3.0.0',
+      paths: {
+        '/api/tasks': {},
       },
-      status: 'ok',
+      components: {
+        schemas: {
+          Task: {},
+        },
+      },
     })
   })
 

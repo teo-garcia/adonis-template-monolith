@@ -44,6 +44,8 @@ router.get('/health', [HealthChecksController, 'index'])
 router.get('/health/live', [HealthChecksController, 'live'])
 router.get('/health/ready', [HealthChecksController, 'ready'])
 router.get('/docs', [DocsController, 'index'])
+router.get('/swagger', [DocsController, 'swagger'])
+router.get('/openapi.json', [DocsController, 'openApi'])
 router.get('/metrics', [MetricsController, 'index'])
 
 router

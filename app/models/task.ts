@@ -18,9 +18,11 @@ export default class Task extends BaseModel {
   declare description: string | null
 
   @column()
+  // @enum(PENDING, IN_PROGRESS, COMPLETED)
   declare status: TaskStatus
 
   @column()
+  // @props({"minimum":0,"maximum":10})
   declare priority: number
 
   @column.dateTime({ autoCreate: true })

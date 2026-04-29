@@ -50,6 +50,7 @@
     "@adonisjs/lucid": "^21.6.1",
     "@adonisjs/redis": "^9.2.0",
     "@vinejs/vine": "^3.0.1",
+    "adonis-autoswagger": "^3.73.0",
     "luxon": "^3.7.2",
     "pg": "^8.13.1",
     "reflect-metadata": "^0.2.2"
@@ -67,9 +68,9 @@
     "@swc/core": "1.11.24",
     "@teo-garcia/eslint-config-shared": "^0.4.0",
     "@teo-garcia/prettier-config-shared": "^0.2.9",
+    "@types/node": "^24.7.0",
     "@typescript-eslint/eslint-plugin": "^8.46.0",
     "@typescript-eslint/parser": "^8.46.0",
-    "@types/node": "^24.7.0",
     "eslint": "^10.0.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
