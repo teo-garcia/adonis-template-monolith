@@ -58,8 +58,8 @@ importers:
         specifier: ^4.0.1
         version: 4.2.0(@japa/runner@5.3.0)
       '@japa/plugin-adonisjs':
-        specifier: ^4.0.0
-        version: 4.0.0(@adonisjs/core@6.21.0(@adonisjs/assembler@7.8.2(typescript@6.0.3))(@vinejs/vine@3.0.1))(@japa/api-client@3.2.1(@japa/assert@4.2.0(@japa/runner@5.3.0))(@japa/runner@5.3.0))(@japa/runner@5.3.0)
+        specifier: ^5.0.0
+        version: 5.2.0(@adonisjs/core@6.21.0(@adonisjs/assembler@7.8.2(typescript@6.0.3))(@vinejs/vine@3.0.1))(@japa/api-client@3.2.1(@japa/assert@4.2.0(@japa/runner@5.3.0))(@japa/runner@5.3.0))(@japa/runner@5.3.0)
       '@japa/runner':
         specifier: ^5.0.0
         version: 5.3.0
@@ -488,15 +488,15 @@ packages:
     resolution: {integrity: sha512-ogPT87QLaugKyPVcq+ZypcetVeJpXZN7RfVRlRDIrSHsHBw6ILCtNXghVxD9POjqxtUM7RON3sUkgZzLnVQA5g==}
     engines: {node: '>=18.16.0'}
 
-  '@japa/plugin-adonisjs@4.0.0':
-    resolution: {integrity: sha512-M2LUtHhKr4KgBfX73tDHNCD1IOmcXp9dvC+AinmRxsggIFnarsClcfjT/sXc3uNzjZW7Lk31LvcH76AxJHBmJQ==}
+  '@japa/plugin-adonisjs@5.2.0':
+    resolution: {integrity: sha512-Knk3X/UeZiEvkXmTj9+dAIOdJHMqRUJFsUMw9y8at+AR1VbPJR9T+aU5SaOn6OtejEFnUMILwJYC3ohg23+vhw==}
     engines: {node: '>=18.16.0'}
     peerDependencies:
-      '@adonisjs/core': ^6.17.0
-      '@japa/api-client': ^2.0.3 || ^3.0.0
-      '@japa/browser-client': ^2.0.3
-      '@japa/runner': ^3.1.2 || ^4.0.0
-      playwright: ^1.42.1
+      '@adonisjs/core': ^7.0.0-next.21 || ^7.0.0
+      '@japa/api-client': ^3.1.0
+      '@japa/browser-client': ^2.2.0
+      '@japa/runner': ^4.0.0 || ^5.0.0
+      playwright: ^1.57.0
     peerDependenciesMeta:
       '@japa/api-client':
         optional: true
@@ -3797,7 +3797,7 @@ snapshots:
       supports-color: 10.2.2
       youch: 4.1.1
 
-  '@japa/plugin-adonisjs@4.0.0(@adonisjs/core@6.21.0(@adonisjs/assembler@7.8.2(typescript@6.0.3))(@vinejs/vine@3.0.1))(@japa/api-client@3.2.1(@japa/assert@4.2.0(@japa/runner@5.3.0))(@japa/runner@5.3.0))(@japa/runner@5.3.0)':
+  '@japa/plugin-adonisjs@5.2.0(@adonisjs/core@6.21.0(@adonisjs/assembler@7.8.2(typescript@6.0.3))(@vinejs/vine@3.0.1))(@japa/api-client@3.2.1(@japa/assert@4.2.0(@japa/runner@5.3.0))(@japa/runner@5.3.0))(@japa/runner@5.3.0)':
     dependencies:
       '@adonisjs/core': 6.21.0(@adonisjs/assembler@7.8.2(typescript@6.0.3))(@vinejs/vine@3.0.1)
       '@japa/runner': 5.3.0
