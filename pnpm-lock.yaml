@@ -18,8 +18,8 @@ importers:
         specifier: ^21.6.1
         version: 21.8.2(@adonisjs/assembler@7.8.2(typescript@6.0.3))(@adonisjs/core@6.21.0(@adonisjs/assembler@7.8.2(typescript@6.0.3))(@vinejs/vine@3.0.1))(@vinejs/vine@3.0.1)(luxon@3.7.2)(pg@8.20.0)
       '@adonisjs/redis':
-        specifier: ^9.2.0
-        version: 9.2.0(@adonisjs/core@6.21.0(@adonisjs/assembler@7.8.2(typescript@6.0.3))(@vinejs/vine@3.0.1))
+        specifier: ^10.0.0
+        version: 10.0.0(@adonisjs/core@6.21.0(@adonisjs/assembler@7.8.2(typescript@6.0.3))(@vinejs/vine@3.0.1))
       '@vinejs/vine':
         specifier: ^3.0.1
         version: 3.0.1
@@ -255,11 +255,11 @@ packages:
       '@adonisjs/assembler':
         optional: true
 
-  '@adonisjs/redis@9.2.0':
-    resolution: {integrity: sha512-DUI9NrHDLZ2ISNjMlqWbKJT99ZYj1ZmvhNFTfhVs9lc7K2KJmNKZfK8Y85a8eN7q+ZYMBYSu1uRemxGs6xRaYw==}
-    engines: {node: '>=20.6.0'}
+  '@adonisjs/redis@10.0.0':
+    resolution: {integrity: sha512-3Wh+2HaxSNHE8LCdDu0QtucyTLoS75xhZDO8nPbaBCRSvLj4gO0dtzshYD7HbFUipkNV+rooJJQWqvsrs0JdJA==}
+    engines: {node: '>=24.0.0'}
     peerDependencies:
-      '@adonisjs/core': ^6.2.0
+      '@adonisjs/core': ^7.0.0-next.0 || ^7.0.0
 
   '@adonisjs/repl@4.1.2':
     resolution: {integrity: sha512-NnczRJusl0082GOjEFYwObW/yBGJtpfJFnkFCQdQ6eykgBHVNYaY6qstfob+l1bedetRj0hrDY6YfsWMkA0MCg==}
@@ -3517,10 +3517,10 @@ snapshots:
     optionalDependencies:
       '@adonisjs/assembler': 7.8.2(typescript@6.0.3)
 
-  '@adonisjs/redis@9.2.0(@adonisjs/core@6.21.0(@adonisjs/assembler@7.8.2(typescript@6.0.3))(@vinejs/vine@3.0.1))':
+  '@adonisjs/redis@10.0.0(@adonisjs/core@6.21.0(@adonisjs/assembler@7.8.2(typescript@6.0.3))(@vinejs/vine@3.0.1))':
     dependencies:
       '@adonisjs/core': 6.21.0(@adonisjs/assembler@7.8.2(typescript@6.0.3))(@vinejs/vine@3.0.1)
-      '@poppinss/utils': 6.10.1
+      '@poppinss/utils': 7.0.1
       emittery: 1.2.1
       ioredis: 5.10.1
     transitivePeerDependencies:
