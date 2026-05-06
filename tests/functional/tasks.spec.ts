@@ -4,6 +4,41 @@ import { test } from '@japa/runner'
 
 const API_PREFIX = '/api'
 
+const assertErrorEnvelope = (
+  payload: Record<string, unknown>,
+  statusCode: number,
+  method: string
+) => {
+  if (payload.success !== false) {
+    throw new Error('Expected error response success=false')
+  }
+  if (payload.statusCode !== statusCode) {
+    throw new Error(`Expected statusCode=${statusCode}`)
+  }
+  if (payload.method !== method) {
+    throw new Error(`Expected method=${method}`)
+  }
+  if (typeof payload.timestamp !== 'string') {
+    throw new TypeError('Expected timestamp string')
+  }
+  if (typeof payload.path !== 'string') {
+    throw new TypeError('Expected path string')
+  }
+  if (typeof payload.message !== 'string') {
+    throw new TypeError('Expected message string')
+  }
+  if (typeof payload.error !== 'string') {
+    throw new TypeError('Expected error string')
+  }
+  if (
+    typeof payload.meta !== 'object' ||
+    payload.meta === null ||
+    typeof (payload.meta as { requestId?: unknown }).requestId !== 'string'
+  ) {
+    throw new TypeError('Expected meta.requestId string')
+  }
+}
+
 test.group('Tasks endpoints', (group) => {
   group.each.setup(() => testUtils.db().truncate())
 
@@ -96,11 +131,13 @@ test.group('Tasks endpoints', (group) => {
     })
 
     response.assertStatus(422)
+    assertErrorEnvelope(response.body(), 422, 'POST')
   })
 
   test('returns 404 for a missing task id', async ({ client }) => {
     const response = await client.get(`${API_PREFIX}/tasks/999999`)
 
     response.assertStatus(404)
+    assertErrorEnvelope(response.body(), 404, 'GET')
   })
 })
