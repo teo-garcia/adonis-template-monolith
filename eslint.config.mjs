@@ -7,7 +7,7 @@ export default defineConfig([
   ...base,
   ...node,
   {
-    ignores: ['build/**', 'coverage/**', 'tmp/**'],
+    ignores: ['.adonisjs/**', 'build/**', 'coverage/**', 'tmp/**'],
   },
   {
     files: ['ace.js', '**/*.config.{js,mjs}', '.lintstagedrc.js'],

@@ -8,7 +8,7 @@ checks, metrics, and a sample tasks module**
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/Node-24+-339933?logo=node.js&logoColor=white)](https://nodejs.org)
 [![pnpm](https://img.shields.io/badge/pnpm-10+-F69220?logo=pnpm&logoColor=white)](https://pnpm.io)
-[![AdonisJS](https://img.shields.io/badge/AdonisJS-6-5A45FF)](https://adonisjs.com)
+[![AdonisJS](https://img.shields.io/badge/AdonisJS-7-5A45FF)](https://adonisjs.com)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-18+-4169E1?logo=postgresql&logoColor=white)](https://postgresql.org)
 
 Part of the [@teo-garcia/templates](https://github.com/teo-garcia/templates)

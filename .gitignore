@@ -2,6 +2,7 @@ node_modules/
 build/
 coverage/
 tmp/
+.adonisjs/
 .hot-hook/
 *.tsbuildinfo
 

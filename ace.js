@@ -13,6 +13,6 @@
 |
 */
 
-import 'ts-node-maintained/register/esm'
+import '@poppinss/ts-exec'
 
 await import('./bin/console.js')
