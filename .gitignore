@@ -3,6 +3,7 @@ build/
 coverage/
 tmp/
 .adonisjs/
+database/schema.ts
 .hot-hook/
 *.tsbuildinfo
 
