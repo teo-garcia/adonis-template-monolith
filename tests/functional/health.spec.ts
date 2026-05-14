@@ -51,6 +51,15 @@ test.group('Health endpoints', () => {
         },
       },
     })
+
+    const components = response.body().components as
+      | { securitySchemes?: unknown }
+      | undefined
+    if (components?.securitySchemes !== undefined) {
+      throw new Error(
+        'Unexpected OpenAPI security schemes for unauthenticated API'
+      )
+    }
   })
 
   test('exposes prometheus metrics', async ({ client }) => {
