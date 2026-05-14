@@ -53,7 +53,9 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Create test environment file
-        run: cp .env.test.example .env.test
+        run: |
+          cp .env.test.example .env
+          cp .env.test.example .env.test
 
       - name: Lint
         run: pnpm lint:es:check
