@@ -47,6 +47,8 @@ test.group('Health endpoints', () => {
       },
       components: {
         schemas: {
+          ErrorEnvelope: {},
+          PaginatedTaskResponse: {},
           Task: {},
         },
       },
@@ -59,6 +61,16 @@ test.group('Health endpoints', () => {
       throw new Error(
         'Unexpected OpenAPI security schemes for unauthenticated API'
       )
+    }
+
+    const taskListResponse =
+      response.body().paths?.['/api/tasks']?.get?.responses?.['200']?.content?.[
+        'application/json'
+      ]?.schema
+    if (
+      taskListResponse?.$ref !== '#/components/schemas/PaginatedTaskResponse'
+    ) {
+      throw new Error('Expected task list OpenAPI response to be paginated')
     }
   })
 

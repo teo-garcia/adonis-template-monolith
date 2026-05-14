@@ -11,7 +11,7 @@ export default class extends BaseSchema {
       table.string('status', 32).notNullable().defaultTo('PENDING').index()
       table.integer('priority').notNullable().defaultTo(0).index()
       table.check(
-        "status in ('PENDING', 'IN_PROGRESS', 'COMPLETED')",
+        "status in ('PENDING', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED')",
         {},
         'tasks_status_check'
       )

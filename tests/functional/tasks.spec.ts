@@ -108,19 +108,50 @@ test.group('Tasks endpoints', (group) => {
 
     response.assertStatus(200)
     const payload = response.body()
-    if (!Array.isArray(payload)) {
-      throw new TypeError('Expected filtered task response to be an array')
+    if (!Array.isArray(payload.data)) {
+      throw new TypeError('Expected filtered task response data to be an array')
     }
-    if (payload.length !== 1) {
+    if (payload.data.length !== 1) {
       throw new Error(
-        `Expected exactly one filtered task, received ${payload.length}`
+        `Expected exactly one filtered task, received ${payload.data.length}`
       )
     }
-    if (payload[0]?.status !== 'IN_PROGRESS') {
+    if (payload.data[0]?.status !== 'IN_PROGRESS') {
       throw new Error('Expected filtered task status to be IN_PROGRESS')
     }
-    if ((payload[0]?.priority ?? -1) < 5) {
+    if ((payload.data[0]?.priority ?? -1) < 5) {
       throw new Error('Expected filtered task priority to be at least 5')
+    }
+    if (
+      payload.meta?.total !== 1 ||
+      payload.meta?.page !== 1 ||
+      payload.meta?.pageSize !== 20
+    ) {
+      throw new Error('Expected filtered task pagination metadata')
+    }
+  })
+
+  test('paginates task lists', async ({ client }) => {
+    await client
+      .post(`${API_PREFIX}/tasks`)
+      .json({ title: 'First', priority: 1 })
+    await client
+      .post(`${API_PREFIX}/tasks`)
+      .json({ title: 'Second', priority: 2 })
+
+    const response = await client.get(`${API_PREFIX}/tasks?page=1&pageSize=1`)
+
+    response.assertStatus(200)
+    const payload = response.body()
+    if (!Array.isArray(payload.data) || payload.data.length !== 1) {
+      throw new Error('Expected one task in paginated response data')
+    }
+    if (
+      payload.meta?.total !== 2 ||
+      payload.meta?.page !== 1 ||
+      payload.meta?.pageSize !== 1
+    ) {
+      throw new Error('Expected pagination metadata to reflect page and total')
     }
   })
 
@@ -158,7 +189,7 @@ test.group('Tasks endpoints', (group) => {
   test('keeps task status and priority invariants in the database', async () => {
     await db.table('tasks').insert({
       priority: 10,
-      status: 'COMPLETED',
+      status: 'CANCELLED',
       title: 'Valid direct insert',
     })
 

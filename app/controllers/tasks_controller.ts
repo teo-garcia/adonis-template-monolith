@@ -47,6 +47,35 @@ const parsePriority = (value: unknown) => {
   return parsed
 }
 
+const parsePositiveInteger = (
+  value: unknown,
+  field: string,
+  defaultValue: number,
+  max?: number
+) => {
+  if (value === undefined) {
+    return defaultValue
+  }
+
+  const raw = Array.isArray(value) ? value.at(0) : value
+  const parsed = parseInteger(raw)
+
+  if (
+    !Number.isInteger(parsed) ||
+    parsed < 1 ||
+    (max !== undefined && parsed > max)
+  ) {
+    const upperBound =
+      max === undefined ? '' : ` and less than or equal to ${max}`
+    throw new Exception(`${field} must be a positive integer${upperBound}`, {
+      code: `E_INVALID_${field.toUpperCase()}`,
+      status: 422,
+    })
+  }
+
+  return parsed
+}
+
 const parseStatus = (value: unknown): TaskStatus | undefined => {
   if (value === undefined) {
     return undefined
@@ -72,9 +101,11 @@ export default class TasksController {
    * @index
    * @summary List tasks
    * @description Returns tasks, optionally filtered by status and priority.
-   * @paramQuery status - Filter by task status - @enum(PENDING, IN_PROGRESS, COMPLETED)
+   * @paramQuery status - Filter by task status - @enum(PENDING, IN_PROGRESS, COMPLETED, CANCELLED)
    * @paramQuery priority - Filter by priority - @type(number)
-   * @responseBody 200 - <Task[]>
+   * @paramQuery page - Page number - @type(number)
+   * @paramQuery pageSize - Page size - @type(number)
+   * @responseBody 200 - <PaginatedTaskResponse>
    * @responseBody 422 - Invalid filter
    */
   async index({ request }: HttpContext) {
@@ -82,8 +113,17 @@ export default class TasksController {
       priority: parsePriority(request.input('priority')),
       status: parseStatus(request.input('status')),
     }
+    const pagination = {
+      page: parsePositiveInteger(request.input('page'), 'page', 1),
+      pageSize: parsePositiveInteger(
+        request.input('pageSize'),
+        'pageSize',
+        20,
+        100
+      ),
+    }
 
-    return tasksService.list(filters)
+    return tasksService.list(filters, pagination)
   }
 
   /**

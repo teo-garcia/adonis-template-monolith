@@ -8,6 +8,22 @@ export interface TaskFilters {
   status?: TaskStatus
 }
 
+export interface PaginationOptions {
+  page: number
+  pageSize: number
+}
+
+export interface PaginationMeta {
+  total: number
+  page: number
+  pageSize: number
+}
+
+export interface PaginatedTasks {
+  data: Task[]
+  meta: PaginationMeta
+}
+
 export interface CreateTaskPayload {
   title: string
   description?: string | null
@@ -34,12 +50,13 @@ class TasksService {
     })
   }
 
-  async list(filters: TaskFilters) {
-    logger.debug({ filters }, 'Listing tasks')
+  async list(
+    filters: TaskFilters,
+    pagination: PaginationOptions
+  ): Promise<PaginatedTasks> {
+    logger.debug({ filters, pagination }, 'Listing tasks')
 
     const query = Task.query()
-      .orderBy('priority', 'desc')
-      .orderBy('created_at', 'desc')
 
     if (filters.status) {
       query.where('status', filters.status)
@@ -49,7 +66,22 @@ class TasksService {
       query.where('priority', '>=', filters.priority)
     }
 
-    return await query
+    const countResult = await query.clone().count('* as total').first()
+    const total = Number(countResult?.$extras.total ?? 0)
+    const data = await query
+      .orderBy('priority', 'desc')
+      .orderBy('created_at', 'desc')
+      .offset((pagination.page - 1) * pagination.pageSize)
+      .limit(pagination.pageSize)
+
+    return {
+      data,
+      meta: {
+        total,
+        page: pagination.page,
+        pageSize: pagination.pageSize,
+      },
+    }
   }
 
   async getOrFail(id: number) {

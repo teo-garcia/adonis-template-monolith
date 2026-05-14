@@ -1,7 +1,12 @@
 import { BaseModel, column } from '@adonisjs/lucid/orm'
 import { DateTime } from 'luxon'
 
-export const TASK_STATUSES = ['PENDING', 'IN_PROGRESS', 'COMPLETED'] as const
+export const TASK_STATUSES = [
+  'PENDING',
+  'IN_PROGRESS',
+  'COMPLETED',
+  'CANCELLED',
+] as const
 
 export type TaskStatus = (typeof TASK_STATUSES)[number]
 
@@ -18,7 +23,7 @@ export default class Task extends BaseModel {
   declare description: string | null
 
   @column()
-  // @enum(PENDING, IN_PROGRESS, COMPLETED)
+  // @enum(PENDING, IN_PROGRESS, COMPLETED, CANCELLED)
   declare status: TaskStatus
 
   @column()
