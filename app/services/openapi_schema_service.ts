@@ -118,7 +118,12 @@ const patchResponseSchema = (response: OpenApiResponse, schema: unknown) => {
 }
 
 const patchContractResponses = (schema: OpenApiDocument) => {
-  const taskListOperation = schema.paths?.['/api/tasks']?.get
+  const taskListPath = Object.keys(schema.paths ?? {}).find((path) =>
+    path.endsWith('/tasks')
+  )
+  const taskListOperation = taskListPath
+    ? schema.paths?.[taskListPath]?.get
+    : undefined
   const taskListOkResponse = taskListOperation?.responses?.['200']
 
   if (taskListOkResponse) {

@@ -43,7 +43,7 @@ test.group('Health endpoints', () => {
     response.assertBodyContains({
       openapi: '3.0.0',
       paths: {
-        '/api/tasks': {},
+        '/api/v1/tasks': {},
       },
       components: {
         schemas: {
@@ -64,9 +64,8 @@ test.group('Health endpoints', () => {
     }
 
     const taskListResponse =
-      response.body().paths?.['/api/tasks']?.get?.responses?.['200']?.content?.[
-        'application/json'
-      ]?.schema
+      response.body().paths?.['/api/v1/tasks']?.get?.responses?.['200']
+        ?.content?.['application/json']?.schema
     if (
       taskListResponse?.$ref !== '#/components/schemas/PaginatedTaskResponse'
     ) {

@@ -65,7 +65,7 @@ services:
       APP_KEY: local-dev-app-key
       APP_NAME: AdonisJS Monolith Template
       APP_VERSION: 1
-      API_PREFIX: /api
+      API_PREFIX: /api/v1
       LOG_LEVEL: info
       DB_CONNECTION: postgres
       DB_HOST: db

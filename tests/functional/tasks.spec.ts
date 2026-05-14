@@ -2,7 +2,7 @@ import testUtils from '@adonisjs/core/services/test_utils'
 import db from '@adonisjs/lucid/services/db'
 import { test } from '@japa/runner'
 
-const API_PREFIX = '/api'
+const API_PREFIX = '/api/v1'
 
 const assertErrorEnvelope = (
   payload: Record<string, unknown>,

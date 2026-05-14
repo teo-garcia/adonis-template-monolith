@@ -55,7 +55,8 @@ pnpm db:migrate
 pnpm dev
 ```
 
-The app starts on `http://localhost:3333` and the sample API lives under `/api`.
+The app starts on `http://localhost:3333` and the sample API lives under
+`/api/v1`.
 
 ---
 
@@ -76,6 +77,7 @@ The app starts on `http://localhost:3333` and the sample API lives under `/api`.
 | `pnpm db:migrate`      | Run pending Lucid migrations         |
 | `pnpm db:rollback`     | Roll back the latest migration batch |
 | `pnpm db:reset`        | Refresh the schema from scratch      |
+| `pnpm db:seed`         | Seed deterministic sample data       |
 | `pnpm db:status`       | Show migration status                |
 
 ---
@@ -98,7 +100,7 @@ The app starts on `http://localhost:3333` and the sample API lives under `/api`.
 | `HOST`            | HTTP host                   | `localhost`             |
 | `PORT`            | Application port            | `3333`                  |
 | `APP_KEY`         | App encryption key          | Required                |
-| `API_PREFIX`      | API route prefix            | `api`                   |
+| `API_PREFIX`      | Versioned API route prefix  | `/api/v1`               |
 | `DB_HOST`         | PostgreSQL host             | `localhost`             |
 | `DB_PORT`         | PostgreSQL port             | `5432`                  |
 | `DB_DATABASE`     | PostgreSQL database         | `adonis_monolith`       |
