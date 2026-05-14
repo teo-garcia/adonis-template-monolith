@@ -65,6 +65,7 @@ The app starts on `http://localhost:3333` and the sample API lives under `/api`.
 | ---------------------- | ------------------------------------ |
 | `pnpm dev`             | Start the Adonis dev server with HMR |
 | `pnpm build`           | Create a standalone production build |
+| `pnpm docs:generate`   | Generate static OpenAPI artifacts    |
 | `pnpm start`           | Run the TypeScript server entrypoint |
 | `pnpm start:prod`      | Run the compiled production server   |
 | `pnpm test`            | Run all Japa suites                  |

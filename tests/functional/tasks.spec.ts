@@ -140,4 +140,64 @@ test.group('Tasks endpoints', (group) => {
     response.assertStatus(404)
     assertErrorEnvelope(response.body(), 404, 'GET')
   })
+
+  test('rejects partially numeric task ids', async ({ client }) => {
+    const response = await client.get(`${API_PREFIX}/tasks/123abc`)
+
+    response.assertStatus(422)
+    assertErrorEnvelope(response.body(), 422, 'GET')
+  })
+
+  test('rejects partially numeric priority filters', async ({ client }) => {
+    const response = await client.get(`${API_PREFIX}/tasks?priority=5abc`)
+
+    response.assertStatus(422)
+    assertErrorEnvelope(response.body(), 422, 'GET')
+  })
+
+  test('keeps task status and priority invariants in the database', async () => {
+    await db.table('tasks').insert({
+      priority: 10,
+      status: 'COMPLETED',
+      title: 'Valid direct insert',
+    })
+
+    await db
+      .table('tasks')
+      .insert({
+        priority: 1,
+        status: 'ARCHIVED',
+        title: 'Invalid status',
+      })
+      .then(() => {
+        throw new Error('Expected invalid status insert to fail')
+      })
+      .catch((error: unknown) => {
+        if (!(error instanceof Error)) {
+          throw error
+        }
+        if (!error.message.includes('tasks_status_check')) {
+          throw error
+        }
+      })
+
+    await db
+      .table('tasks')
+      .insert({
+        priority: 11,
+        status: 'PENDING',
+        title: 'Invalid priority',
+      })
+      .then(() => {
+        throw new Error('Expected invalid priority insert to fail')
+      })
+      .catch((error: unknown) => {
+        if (!(error instanceof Error)) {
+          throw error
+        }
+        if (!error.message.includes('tasks_priority_check')) {
+          throw error
+        }
+      })
+  })
 })

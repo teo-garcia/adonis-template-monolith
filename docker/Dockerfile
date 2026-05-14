@@ -3,13 +3,13 @@
 # ================================
 FROM node:24-alpine AS builder
 
-RUN corepack enable && corepack prepare pnpm@10.32.1 --activate
+RUN corepack enable && corepack prepare pnpm@10.33.2 --activate
 
 WORKDIR /app
 
-COPY package.json ./
+COPY package.json pnpm-lock.yaml ./
 
-RUN pnpm install --no-frozen-lockfile
+RUN pnpm install --frozen-lockfile
 
 COPY . .
 
@@ -44,14 +44,14 @@ RUN pnpm build
 FROM node:24-alpine AS production
 
 RUN apk add --no-cache dumb-init
-RUN corepack enable && corepack prepare pnpm@10.32.1 --activate
+RUN corepack enable && corepack prepare pnpm@10.33.2 --activate
 RUN addgroup -g 1001 -S nodejs && adduser -S adonis -u 1001
 
 WORKDIR /app
 
 COPY --from=builder /app/build ./
 
-RUN pnpm install --prod --no-frozen-lockfile
+RUN pnpm install --prod --frozen-lockfile --ignore-scripts
 
 USER adonis
 

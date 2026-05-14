@@ -11,13 +11,14 @@
     "pnpm": ">=9"
   },
   "scripts": {
-    "build": "node ace build",
+    "build": "pnpm docs:generate && node ace build",
     "check": "pnpm lint:es:check && pnpm lint:ts && pnpm format:check && pnpm test",
     "commitlint": "commitlint --edit",
     "db:migrate": "node ace migration:run",
     "db:rollback": "node ace migration:rollback",
     "db:reset": "node ace migration:refresh",
     "db:status": "node ace migration:status",
+    "docs:generate": "node ace docs:generate",
     "dev": "node ace serve --hmr",
     "format": "prettier --write .",
     "format:check": "prettier --check .",

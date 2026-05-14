@@ -20,6 +20,7 @@ export default defineConfig([
   {
     files: [
       'app/**/*.ts',
+      'commands/**/*.ts',
       'database/migrations/**/*.ts',
       'tests/**/*.ts',
       'bin/**/*.ts',

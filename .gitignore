@@ -4,6 +4,8 @@ coverage/
 tmp/
 .adonisjs/
 database/schema.ts
+swagger.json
+swagger.yml
 .hot-hook/
 *.tsbuildinfo
 

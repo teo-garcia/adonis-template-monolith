@@ -10,6 +10,16 @@ export default class extends BaseSchema {
       table.text('description').nullable()
       table.string('status', 32).notNullable().defaultTo('PENDING').index()
       table.integer('priority').notNullable().defaultTo(0).index()
+      table.check(
+        "status in ('PENDING', 'IN_PROGRESS', 'COMPLETED')",
+        {},
+        'tasks_status_check'
+      )
+      table.check(
+        'priority >= 0 and priority <= 10',
+        {},
+        'tasks_priority_check'
+      )
       table
         .timestamp('created_at', { useTz: true })
         .notNullable()

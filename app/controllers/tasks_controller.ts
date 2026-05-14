@@ -8,8 +8,16 @@ import {
   updateTaskValidator,
 } from '#validators/task_validators'
 
+const parseInteger = (value: unknown) => {
+  if (typeof value !== 'string' || !/^\d+$/.test(value)) {
+    return Number.NaN
+  }
+
+  return Number.parseInt(value, 10)
+}
+
 const parseTaskId = (value: string) => {
-  const parsed = Number.parseInt(value, 10)
+  const parsed = parseInteger(value)
 
   if (!Number.isInteger(parsed) || parsed < 1) {
     throw new Exception('Task id must be a positive integer', {
@@ -27,7 +35,7 @@ const parsePriority = (value: unknown) => {
   }
 
   const raw = Array.isArray(value) ? value.at(0) : value
-  const parsed = Number.parseInt(String(raw), 10)
+  const parsed = parseInteger(raw)
 
   if (!Number.isInteger(parsed) || parsed < 0 || parsed > 10) {
     throw new Exception('Priority filter must be an integer between 0 and 10', {

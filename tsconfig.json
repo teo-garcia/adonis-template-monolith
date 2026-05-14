@@ -10,6 +10,7 @@
     "adonisrc.ts",
     "app/**/*.ts",
     "bin/**/*.ts",
+    "commands/**/*.ts",
     "config/**/*.ts",
     "contracts/**/*.d.ts",
     "database/**/*.ts",

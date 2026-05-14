@@ -26,6 +26,16 @@ export default defineConfig({
     init: [indexEntities()],
   },
   preloads: [() => import('#start/routes'), () => import('#start/kernel')],
+  metaFiles: [
+    {
+      pattern: 'swagger.json',
+      reloadServer: false,
+    },
+    {
+      pattern: 'swagger.yml',
+      reloadServer: false,
+    },
+  ],
   tests: {
     suites: [
       {
