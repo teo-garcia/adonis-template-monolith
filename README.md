@@ -62,23 +62,24 @@ The app starts on `http://localhost:3333` and the sample API lives under
 
 ## Scripts
 
-| Command                | Description                          |
-| ---------------------- | ------------------------------------ |
-| `pnpm dev`             | Start the Adonis dev server with HMR |
-| `pnpm build`           | Create a standalone production build |
-| `pnpm docs:generate`   | Generate static OpenAPI artifacts    |
-| `pnpm start`           | Run the TypeScript server entrypoint |
-| `pnpm start:prod`      | Run the compiled production server   |
-| `pnpm test`            | Run all Japa suites                  |
-| `pnpm test:functional` | Run the functional API suite         |
-| `pnpm lint:es`         | Lint and fix with ESLint             |
-| `pnpm lint:ts`         | TypeScript type checking             |
-| `pnpm format`          | Format with Prettier                 |
-| `pnpm db:migrate`      | Run pending Lucid migrations         |
-| `pnpm db:rollback`     | Roll back the latest migration batch |
-| `pnpm db:reset`        | Refresh the schema from scratch      |
-| `pnpm db:seed`         | Seed deterministic sample data       |
-| `pnpm db:status`       | Show migration status                |
+| Command                | Description                            |
+| ---------------------- | -------------------------------------- |
+| `pnpm dev`             | Start the Adonis dev server with HMR   |
+| `pnpm build`           | Create a standalone production build   |
+| `pnpm check`           | Run lint, typecheck, format, and tests |
+| `pnpm docs:generate`   | Generate static OpenAPI artifacts      |
+| `pnpm start`           | Run the TypeScript server entrypoint   |
+| `pnpm start:prod`      | Run the compiled production server     |
+| `pnpm test`            | Run all Japa suites                    |
+| `pnpm test:functional` | Run the functional API suite           |
+| `pnpm lint:es`         | Lint and fix with ESLint               |
+| `pnpm lint:ts`         | TypeScript type checking               |
+| `pnpm format`          | Format with Prettier                   |
+| `pnpm db:migrate`      | Run pending Lucid migrations           |
+| `pnpm db:rollback`     | Roll back the latest migration batch   |
+| `pnpm db:reset`        | Refresh the schema from scratch        |
+| `pnpm db:seed`         | Seed deterministic sample data         |
+| `pnpm db:status`       | Show migration status                  |
 
 ---
 
