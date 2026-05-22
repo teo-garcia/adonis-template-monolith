@@ -23,29 +23,4 @@ export default defineConfig([
       },
     },
   },
-  {
-    files: [
-      'app/**/*.ts',
-      'commands/**/*.ts',
-      'database/migrations/**/*.ts',
-      'tests/**/*.ts',
-      'bin/**/*.ts',
-    ],
-    rules: {
-      // Adonis conventionally scaffolds snake_case file names for many artifacts.
-      'unicorn/filename-case': 'off',
-    },
-  },
-  {
-    files: ['bin/**/*.ts'],
-    rules: {
-      'unicorn/prefer-top-level-await': 'off',
-    },
-  },
-  {
-    files: ['database/migrations/**/*.ts'],
-    rules: {
-      'unicorn/no-anonymous-default-export': 'off',
-    },
-  },
 ])
