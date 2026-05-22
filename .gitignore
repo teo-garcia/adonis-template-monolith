@@ -17,6 +17,8 @@ swagger.yml
 .env.local
 .env.*.local
 
-.vscode/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
 
 test-results/
