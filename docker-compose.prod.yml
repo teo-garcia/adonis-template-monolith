@@ -1,0 +1,41 @@
+services:
+  db:
+    ports: !reset []
+    volumes: !override
+      - postgres_data:/var/lib/postgresql
+
+  redis:
+    ports: !reset []
+
+  app:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: ${PORT:-3333}
+      APP_KEY: ${APP_KEY:?Set APP_KEY for production-like runs}
+      APP_NAME: ${APP_NAME:-AdonisJS Monolith Template}
+      APP_VERSION: ${APP_VERSION:-1}
+      API_PREFIX: ${API_PREFIX:-/api/v1}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      DB_CONNECTION: postgres
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      DB_DATABASE: ${DB_DATABASE:-adonis_monolith}
+      DB_DEBUG: "false"
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-}
+      REDIS_DB: ${REDIS_DB:-0}
+      CORS_ENABLED: ${CORS_ENABLED:-true}
+      CORS_ORIGIN: ${CORS_ORIGIN:?Set CORS_ORIGIN to the deployed frontend origin}
+      METRICS_ENABLED: ${METRICS_ENABLED:-true}
+    volumes: !reset []
+
+  pgadmin:
+    profiles:
+      - local-tools

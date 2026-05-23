@@ -91,8 +91,8 @@ request handlers, seed scripts, or tests that point at a shared database.
 
 Production migrations must be backward-compatible with the currently running
 version. Use expand-contract changes: add nullable columns, new tables, and new
-indexes before code depends on them; backfill explicitly when needed; deploy code
-that stops reading the old shape; then remove or narrow schema in a later
+indexes before code depends on them; backfill explicitly when needed; deploy
+code that stops reading the old shape; then remove or narrow schema in a later
 release.
 
 `pnpm db:migrate` is safe to re-run when there are no pending migrations.
@@ -135,6 +135,20 @@ contraction with the first code release that stops using the old shape.
 | `METRICS_ENABLED` | Enable the metrics endpoint | `true`                  |
 
 See `.env.example` and `.env.test.example` for the full set.
+
+### Environment Promotion
+
+Use `.env.example` as the complete variable inventory, then review values before
+promoting beyond local development:
+
+- Set `NODE_ENV=production`, `HOST=0.0.0.0`, `LOG_LEVEL=info`, and
+  `DB_DEBUG=false`.
+- Replace `APP_KEY`, local Postgres, Redis, and pgAdmin defaults; pgAdmin is
+  local-only.
+- Set `CORS_ORIGIN` to the deployed frontend origin. Do not use wildcards.
+- Production schema changes go through `pnpm db:migrate`.
+- Use `docker-compose.prod.yml` for a production-like local smoke test:
+  `docker compose -f docker-compose.yml -f docker-compose.prod.yml up --build`.
 
 ---
 
