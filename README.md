@@ -120,19 +120,20 @@ contraction with the first code release that stops using the old shape.
 
 ## Environment Variables
 
-| Variable          | Description                 | Default                 |
-| ----------------- | --------------------------- | ----------------------- |
-| `HOST`            | HTTP host                   | `localhost`             |
-| `PORT`            | Application port            | `3333`                  |
-| `APP_KEY`         | App encryption key          | Required                |
-| `API_PREFIX`      | Versioned API route prefix  | `/api/v1`               |
-| `DB_HOST`         | PostgreSQL host             | `localhost`             |
-| `DB_PORT`         | PostgreSQL port             | `5432`                  |
-| `DB_DATABASE`     | PostgreSQL database         | `adonis_monolith`       |
-| `REDIS_HOST`      | Redis host                  | `localhost`             |
-| `REDIS_PORT`      | Redis port                  | `6379`                  |
-| `CORS_ORIGIN`     | Allowed frontend origin     | `http://localhost:3000` |
-| `METRICS_ENABLED` | Enable the metrics endpoint | `true`                  |
+| Variable          | Description                           | Default                 |
+| ----------------- | ------------------------------------- | ----------------------- |
+| `HOST`            | HTTP host                             | `localhost`             |
+| `PORT`            | Application port                      | `3333`                  |
+| `HTTP_PORT`       | Nginx host port in production compose | `8080`                  |
+| `APP_KEY`         | App encryption key                    | Required                |
+| `API_PREFIX`      | Versioned API route prefix            | `/api/v1`               |
+| `DB_HOST`         | PostgreSQL host                       | `localhost`             |
+| `DB_PORT`         | PostgreSQL port                       | `5432`                  |
+| `DB_DATABASE`     | PostgreSQL database                   | `adonis_monolith`       |
+| `REDIS_HOST`      | Redis host                            | `localhost`             |
+| `REDIS_PORT`      | Redis port                            | `6379`                  |
+| `CORS_ORIGIN`     | Allowed frontend origin               | `http://localhost:3000` |
+| `METRICS_ENABLED` | Enable the metrics endpoint           | `true`                  |
 
 See `.env.example` and `.env.test.example` for the full set.
 
@@ -149,6 +150,8 @@ promoting beyond local development:
 - Production schema changes go through `pnpm db:migrate`.
 - Use `docker-compose.prod.yml` for a production-like local smoke test:
   `docker compose -f docker-compose.yml -f docker-compose.prod.yml up --build`.
+  Nginx is the public entry point on `HTTP_PORT`; the app, Postgres, and Redis
+  ports are internal to the Compose network.
 
 ---
 
