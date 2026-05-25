@@ -23,6 +23,8 @@ server.use([
 
 router.use([
   () => import('@adonisjs/core/bodyparser_middleware'),
+  () => import('#middleware/telemetry_middleware'),
+  () => import('#middleware/logging_middleware'),
   () => import('#middleware/metrics_middleware'),
 ])
 

@@ -11,7 +11,7 @@
 
 import 'reflect-metadata'
 
-import { Ignitor, prettyPrintError } from '@adonisjs/core'
+import { shutdownTelemetry, startTelemetry } from '#start/telemetry'
 
 const APP_ROOT = new URL('../', import.meta.url)
 
@@ -23,14 +23,22 @@ const IMPORTER = (filePath: string) => {
   return import(filePath)
 }
 
+await startTelemetry()
+
+const { Ignitor, prettyPrintError } = await import('@adonisjs/core')
+
 new Ignitor(APP_ROOT, { importer: IMPORTER })
   .tap((app) => {
     app.booting(async () => {
       await import('#start/env')
     })
 
-    app.listen('SIGTERM', () => app.terminate())
-    app.listenIf(app.managedByPm2, 'SIGINT', () => app.terminate())
+    app.listen('SIGTERM', () => {
+      void shutdownTelemetry().finally(() => app.terminate())
+    })
+    app.listenIf(app.managedByPm2, 'SIGINT', () => {
+      void shutdownTelemetry().finally(() => app.terminate())
+    })
   })
   .httpServer()
   .start()
