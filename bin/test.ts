@@ -13,10 +13,15 @@ process.env.NODE_ENV = 'test'
 
 import 'reflect-metadata'
 
+import { fileURLToPath } from 'node:url'
+
 import { Ignitor, prettyPrintError } from '@adonisjs/core'
 import { configure, processCLIArgs, run } from '@japa/runner'
 
+import { requireTestDatabase } from '#tests/database_safety'
+
 const APP_ROOT = new URL('../', import.meta.url)
+const ENV_TEST_PATH = fileURLToPath(new URL('../.env.test', import.meta.url))
 
 const IMPORTER = (filePath: string) => {
   if (filePath.startsWith('./') || filePath.startsWith('../')) {
@@ -29,7 +34,8 @@ const IMPORTER = (filePath: string) => {
 new Ignitor(APP_ROOT, { importer: IMPORTER })
   .tap((app) => {
     app.booting(async () => {
-      await import('#start/env')
+      const { default: env } = await import('#start/env')
+      requireTestDatabase(ENV_TEST_PATH, env.get('DB_DATABASE'))
     })
 
     app.listen('SIGTERM', () => app.terminate())
