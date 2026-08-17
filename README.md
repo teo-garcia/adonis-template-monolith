@@ -185,12 +185,12 @@ promoting beyond local development:
 
 ## Related Templates
 
-| Template                    | Description      |
-| --------------------------- | ---------------- |
-| `nest-template-monolith`    | NestJS backend   |
-| `fastapi-template-monolith` | FastAPI backend  |
-| `django-template-monolith`  | Django backend   |
-| `react-template-next`       | Next.js frontend |
+| Template                    | Description            |
+| --------------------------- | ---------------------- |
+| `nest-template-monolith`    | NestJS backend         |
+| `fastapi-template-monolith` | FastAPI backend        |
+| `django-template-monolith`  | Django backend         |
+| `next-template-fullstack`   | Next.js full-stack app |
 
 ---
 
