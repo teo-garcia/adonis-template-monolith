@@ -5,7 +5,7 @@ test.group('Health endpoints', () => {
     const response = await client.get('/')
 
     response.assertStatus(200)
-    response.assertBodyContains({ status: 'ok' })
+    response.assertBodyContains({ data: { status: 'ok' } })
   })
 
   test('reports liveness', async ({ client }) => {
@@ -48,6 +48,7 @@ test.group('Health endpoints', () => {
       components: {
         schemas: {
           ErrorEnvelope: {},
+          SuccessEnvelope: {},
           PaginatedTaskResponse: {},
           Task: {},
         },
@@ -63,13 +64,25 @@ test.group('Health endpoints', () => {
       )
     }
 
+    // Successful payloads are documented inside the success envelope, so the
+    // task list schema is an allOf of the envelope plus a paginated `data`.
     const taskListResponse =
       response.body().paths?.['/api/v1/tasks']?.get?.responses?.['200']
         ?.content?.['application/json']?.schema
+    const taskListVariants = taskListResponse?.allOf as
+      | { $ref?: string; properties?: { data?: { $ref?: string } } }[]
+      | undefined
+
     if (
-      taskListResponse?.$ref !== '#/components/schemas/PaginatedTaskResponse'
+      taskListVariants?.[0]?.$ref !== '#/components/schemas/SuccessEnvelope'
     ) {
-      throw new Error('Expected task list OpenAPI response to be paginated')
+      throw new Error('Expected task list OpenAPI response to use the envelope')
+    }
+    if (
+      taskListVariants?.[1]?.properties?.data?.$ref !==
+      '#/components/schemas/PaginatedTaskResponse'
+    ) {
+      throw new Error('Expected enveloped task list data to be paginated')
     }
   })
 

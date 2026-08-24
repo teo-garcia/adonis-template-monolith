@@ -42,6 +42,8 @@ export default await Env.create(new URL('../', import.meta.url), {
   CORS_ENABLED: Env.schema.boolean(),
   CORS_ORIGIN: Env.schema.string(),
   METRICS_ENABLED: Env.schema.boolean(),
+  THROTTLE_TTL: Env.schema.number(),
+  THROTTLE_LIMIT: Env.schema.number(),
   OTEL_ENABLED: Env.schema.boolean.optional(),
   OTEL_SERVICE_NAME: Env.schema.string.optional(),
   OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: Env.schema.string.optional(),

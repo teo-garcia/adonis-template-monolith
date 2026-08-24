@@ -23,9 +23,11 @@ server.use([
 
 router.use([
   () => import('@adonisjs/core/bodyparser_middleware'),
+  () => import('#middleware/response_envelope_middleware'),
   () => import('#middleware/telemetry_middleware'),
   () => import('#middleware/logging_middleware'),
   () => import('#middleware/metrics_middleware'),
+  () => import('#middleware/throttle_middleware'),
 ])
 
 export const middleware = router.named({})

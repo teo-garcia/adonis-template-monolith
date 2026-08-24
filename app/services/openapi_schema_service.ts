@@ -37,6 +37,8 @@ const JSON_SCHEMA_CONTENT = (schema: unknown) => ({
   },
 })
 
+const SUCCESS_STATUS_CODES = new Set(['200', '201'])
+
 const ERROR_STATUS_CODES = new Set([
   '400',
   '401',
@@ -78,6 +80,26 @@ const addContractSchemas = (schema: OpenApiDocument) => {
       meta: { $ref: '#/components/schemas/PaginationMeta' },
     },
   }
+  schemas.SuccessEnvelope = {
+    type: 'object',
+    required: ['success', 'statusCode', 'timestamp', 'path', 'method', 'data'],
+    properties: {
+      success: { type: 'boolean', enum: [true] },
+      statusCode: { type: 'integer', minimum: 200, maximum: 399 },
+      timestamp: { type: 'string', format: 'date-time' },
+      path: { type: 'string' },
+      method: { type: 'string' },
+      data: {},
+      meta: {
+        type: 'object',
+        properties: {
+          requestId: { type: 'string' },
+          version: { type: 'string' },
+          duration: { type: 'integer', minimum: 0 },
+        },
+      },
+    },
+  }
   schemas.ErrorEnvelope = {
     type: 'object',
     required: [
@@ -117,6 +139,30 @@ const patchResponseSchema = (response: OpenApiResponse, schema: unknown) => {
   response.content = JSON_SCHEMA_CONTENT(schema)
 }
 
+/**
+ * Successful payloads travel inside the shared success envelope (see
+ * `app/middleware/response_envelope_middleware.ts`), so the documented schema
+ * has to describe the wrapper, not just the payload.
+ */
+const successEnvelopeOf = (dataSchema: unknown) => ({
+  allOf: [
+    { $ref: '#/components/schemas/SuccessEnvelope' },
+    {
+      type: 'object',
+      required: ['data'],
+      properties: { data: dataSchema },
+    },
+  ],
+})
+
+const readResponseSchema = (response: OpenApiResponse) => {
+  const content = response.content as
+    | Record<string, { schema?: unknown }>
+    | undefined
+
+  return content?.['application/json']?.schema
+}
+
 const patchContractResponses = (schema: OpenApiDocument) => {
   const taskListPath = Object.keys(schema.paths ?? {}).find((path) =>
     path.endsWith('/tasks')
@@ -130,6 +176,24 @@ const patchContractResponses = (schema: OpenApiDocument) => {
     patchResponseSchema(taskListOkResponse, {
       $ref: '#/components/schemas/PaginatedTaskResponse',
     })
+  }
+
+  for (const pathItem of Object.values(schema.paths ?? {})) {
+    for (const operation of Object.values(pathItem)) {
+      for (const [statusCode, response] of Object.entries(
+        operation.responses ?? {}
+      )) {
+        if (!SUCCESS_STATUS_CODES.has(statusCode)) {
+          continue
+        }
+
+        const dataSchema = readResponseSchema(response)
+
+        if (dataSchema !== undefined) {
+          patchResponseSchema(response, successEnvelopeOf(dataSchema))
+        }
+      }
+    }
   }
 
   for (const pathItem of Object.values(schema.paths ?? {})) {

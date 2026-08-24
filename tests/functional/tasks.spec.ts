@@ -39,6 +39,38 @@ const assertErrorEnvelope = (
   }
 }
 
+const assertSuccessEnvelope = (
+  payload: Record<string, unknown>,
+  statusCode: number,
+  method: string
+) => {
+  if (payload.success !== true) {
+    throw new Error('Expected success response success=true')
+  }
+  if (payload.statusCode !== statusCode) {
+    throw new Error(`Expected statusCode=${statusCode}`)
+  }
+  if (payload.method !== method) {
+    throw new Error(`Expected method=${method}`)
+  }
+  if (typeof payload.timestamp !== 'string') {
+    throw new TypeError('Expected timestamp string')
+  }
+  if (typeof payload.path !== 'string') {
+    throw new TypeError('Expected path string')
+  }
+  const meta = payload.meta as Record<string, unknown> | undefined
+  if (typeof meta?.requestId !== 'string') {
+    throw new TypeError('Expected meta.requestId string')
+  }
+  if (typeof meta?.version !== 'string') {
+    throw new TypeError('Expected meta.version string')
+  }
+  if (typeof meta?.duration !== 'number') {
+    throw new TypeError('Expected meta.duration number')
+  }
+}
+
 test.group('Tasks endpoints', (group) => {
   group.each.setup(() => testUtils.db().truncate())
 
@@ -50,11 +82,14 @@ test.group('Tasks endpoints', (group) => {
     })
 
     response.assertStatus(201)
+    assertSuccessEnvelope(response.body(), 201, 'POST')
     response.assertBodyContains({
-      title: 'Test task',
-      description: 'A task created from the functional suite',
-      priority: 3,
-      status: 'PENDING',
+      data: {
+        title: 'Test task',
+        description: 'A task created from the functional suite',
+        priority: 3,
+        status: 'PENDING',
+      },
     })
   })
 
@@ -69,7 +104,7 @@ test.group('Tasks endpoints', (group) => {
 
     const getResponse = await client.get(`${API_PREFIX}/tasks/${taskId}`)
     getResponse.assertStatus(200)
-    getResponse.assertBodyContains({ title: 'Task to mutate' })
+    getResponse.assertBodyContains({ data: { title: 'Task to mutate' } })
 
     const updateResponse = await client
       .patch(`${API_PREFIX}/tasks/${taskId}`)
@@ -79,8 +114,10 @@ test.group('Tasks endpoints', (group) => {
       })
     updateResponse.assertStatus(200)
     updateResponse.assertBodyContains({
-      status: 'IN_PROGRESS',
-      title: 'Updated task title',
+      data: {
+        status: 'IN_PROGRESS',
+        title: 'Updated task title',
+      },
     })
 
     const deleteResponse = await client.delete(`${API_PREFIX}/tasks/${taskId}`)
@@ -107,7 +144,8 @@ test.group('Tasks endpoints', (group) => {
     )
 
     response.assertStatus(200)
-    const payload = response.body()
+    assertSuccessEnvelope(response.body(), 200, 'GET')
+    const payload = response.body().data
     if (!Array.isArray(payload.data)) {
       throw new TypeError('Expected filtered task response data to be an array')
     }
@@ -142,7 +180,8 @@ test.group('Tasks endpoints', (group) => {
     const response = await client.get(`${API_PREFIX}/tasks?page=1&pageSize=1`)
 
     response.assertStatus(200)
-    const payload = response.body()
+    assertSuccessEnvelope(response.body(), 200, 'GET')
+    const payload = response.body().data
     if (!Array.isArray(payload.data) || payload.data.length !== 1) {
       throw new Error('Expected one task in paginated response data')
     }
