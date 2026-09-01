@@ -8,24 +8,63 @@ test.group('Health endpoints', () => {
     response.assertBodyContains({ data: { status: 'ok' } })
   })
 
-  test('reports liveness', async ({ client }) => {
+  test('reports liveness without dependency checks', async ({ client }) => {
     const response = await client.get('/health/live')
 
     response.assertStatus(200)
-    response.assertBody({ status: 'ok' })
+    response.assertBodyContains({ status: 'ok' })
+
+    const body = response.body()
+    if (typeof body.timestamp !== 'string') {
+      throw new TypeError('Expected liveness timestamp string')
+    }
+    if (typeof body.version !== 'string') {
+      throw new TypeError('Expected liveness version string')
+    }
+    if (body.checks !== undefined) {
+      throw new Error('Liveness must not run dependency checks')
+    }
   })
 
-  test('reports readiness', async ({ client }) => {
+  test('reports readiness in the shared health contract', async ({
+    client,
+  }) => {
     const response = await client.get('/health/ready')
 
     response.assertStatus(200)
-    response.assertBody({
+    response.assertBodyContains({
       checks: {
-        database: 'ok',
-        redis: 'ok',
+        database: 'up',
+        redis: 'up',
       },
       status: 'ok',
     })
+
+    const body = response.body()
+    if (typeof body.timestamp !== 'string') {
+      throw new TypeError('Expected readiness timestamp string')
+    }
+    if (typeof body.version !== 'string') {
+      throw new TypeError('Expected readiness version string')
+    }
+  })
+
+  test('reports the same contract on /health as on /health/ready', async ({
+    client,
+  }) => {
+    const overall = await client.get('/health')
+    const ready = await client.get('/health/ready')
+
+    overall.assertStatus(200)
+    if (overall.body().status !== ready.body().status) {
+      throw new Error('/health and /health/ready must agree on status')
+    }
+    if (
+      JSON.stringify(overall.body().checks) !==
+      JSON.stringify(ready.body().checks)
+    ) {
+      throw new Error('/health and /health/ready must report the same checks')
+    }
   })
 
   test('serves API docs', async ({ client }) => {
