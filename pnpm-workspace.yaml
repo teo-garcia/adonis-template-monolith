@@ -1,3 +1,6 @@
 allowBuilds:
   "@swc/core": true
   protobufjs: true
+
+overrides:
+  "@adonisjs/ace": "14.1.1"
