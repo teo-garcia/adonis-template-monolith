@@ -1,0 +1,22 @@
+{
+  "all": true,
+  "src": ["app", "config", "start", "database"],
+  "include": [
+    "app/**/*.ts",
+    "config/**/*.ts",
+    "start/**/*.ts",
+    "database/**/*.ts"
+  ],
+  "exclude": [
+    "**/*.spec.ts",
+    "**/*.d.ts",
+    "tests/**",
+    "build/**",
+    "bin/**",
+    "commands/**",
+    "database/migrations/**",
+    "database/seeders/**"
+  ],
+  "reporter": ["text", "lcov", "html"],
+  "report-dir": "coverage"
+}
