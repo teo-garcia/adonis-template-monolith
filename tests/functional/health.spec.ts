@@ -72,7 +72,7 @@ test.group('Health endpoints', () => {
 
     response.assertStatus(200)
     response.assertTextIncludes('SwaggerUIBundle')
-    response.assertTextIncludes('/swagger')
+    response.assertTextIncludes('/openapi.json')
   })
 
   test('serves OpenAPI schema', async ({ client }) => {
