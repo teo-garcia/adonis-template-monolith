@@ -1,7 +1,9 @@
-interface MetricSample {
-  count: number
-  durationSecondsTotal: number
-}
+import {
+  collectDefaultMetrics,
+  Counter,
+  Histogram,
+  Registry,
+} from 'prom-client'
 
 interface RequestMetric {
   durationMs: number
@@ -10,56 +12,53 @@ interface RequestMetric {
   status: number
 }
 
-const escapeLabel = (value: string) =>
-  value.replaceAll('\\', '\\\\').replaceAll('"', String.raw`\"`)
-
+/**
+ * Prometheus metrics.
+ *
+ * Uses prom-client rather than hand-rolled counters so this template exposes
+ * the same series as the other backends: a duration *histogram* (the previous
+ * sum/count pair could not answer p95/p99) plus default process metrics.
+ */
 class MetricsService {
-  #samples = new Map<string, MetricSample>()
+  readonly registry = new Registry()
 
-  record({ durationMs, method, route, status }: RequestMetric) {
-    const key = JSON.stringify({ method, route, status })
-    const sample = this.#samples.get(key) ?? {
-      count: 0,
-      durationSecondsTotal: 0,
-    }
+  readonly #requests: Counter<string>
+  readonly #duration: Histogram<string>
 
-    sample.count += 1
-    sample.durationSecondsTotal += durationMs / 1000
+  constructor() {
+    this.registry.setDefaultLabels({ app: 'adonis-monolith' })
 
-    this.#samples.set(key, sample)
+    this.#requests = new Counter({
+      name: 'http_requests_total',
+      help: 'Total number of HTTP requests',
+      labelNames: ['method', 'route', 'status'],
+      registers: [this.registry],
+    })
+
+    this.#duration = new Histogram({
+      name: 'http_request_duration_seconds',
+      help: 'Duration of HTTP requests in seconds',
+      labelNames: ['method', 'route', 'status'],
+      buckets: [0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10],
+      registers: [this.registry],
+    })
+
+    collectDefaultMetrics({ register: this.registry })
   }
 
-  render() {
-    const lines = [
-      '# HELP http_requests_total Total number of HTTP requests',
-      '# TYPE http_requests_total counter',
-      '# HELP http_request_duration_seconds_sum Total HTTP request duration in seconds',
-      '# TYPE http_request_duration_seconds_sum counter',
-      '# HELP http_request_duration_seconds_count Total HTTP request samples',
-      '# TYPE http_request_duration_seconds_count counter',
-    ]
+  record({ durationMs, method, route, status }: RequestMetric) {
+    const labels = { method, route, status: String(status) }
 
-    for (const [key, sample] of this.#samples.entries()) {
-      const labels = JSON.parse(key) as {
-        method: string
-        route: string
-        status: number
-      }
+    this.#requests.inc(labels)
+    this.#duration.observe(labels, durationMs / 1000)
+  }
 
-      const labelSet = `method="${escapeLabel(labels.method)}",route="${escapeLabel(
-        labels.route
-      )}",status="${labels.status}"`
+  async render() {
+    return this.registry.metrics()
+  }
 
-      lines.push(
-        `http_requests_total{${labelSet}} ${sample.count}`,
-        `http_request_duration_seconds_sum{${labelSet}} ${sample.durationSecondsTotal.toFixed(
-          6
-        )}`,
-        `http_request_duration_seconds_count{${labelSet}} ${sample.count}`
-      )
-    }
-
-    return `${lines.join('\n')}\n`
+  get contentType() {
+    return this.registry.contentType
   }
 }
 

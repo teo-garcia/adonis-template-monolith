@@ -13,7 +13,7 @@ export default class MetricsController {
       })
     }
 
-    response.header('content-type', 'text/plain; version=0.0.4; charset=utf-8')
+    response.header('content-type', metricsService.contentType)
 
     return metricsService.render()
   }

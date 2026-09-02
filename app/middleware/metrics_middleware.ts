@@ -11,7 +11,10 @@ export default class MetricsMiddleware {
     }
 
     const startedAt = process.hrtime.bigint()
-    const route = ctx.route?.pattern ?? ctx.request.url()
+    // Unmatched requests fall back to a constant, never the raw URL: a 404
+    // scan would otherwise create one label set per probed path and grow the
+    // registry without bound.
+    const route = ctx.route?.pattern ?? 'unmatched'
     const method = ctx.request.method()
 
     ctx.response.response.once('finish', () => {
