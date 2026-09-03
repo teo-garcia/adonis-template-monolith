@@ -37,10 +37,12 @@ export default class ThrottleMiddleware {
 
     if (!response) {
       const availableIn = await requestLimiter.availableIn(key)
+      const resetAt = Math.ceil(Date.now() / 1000) + availableIn
 
       ctx.response.header('Retry-After', String(availableIn))
       ctx.response.header('X-RateLimit-Limit', String(throttleConfig.requests))
       ctx.response.header('X-RateLimit-Remaining', '0')
+      ctx.response.header('X-RateLimit-Reset', String(resetAt))
 
       return ctx.response.status(429).send({
         success: false,
@@ -56,6 +58,10 @@ export default class ThrottleMiddleware {
 
     ctx.response.header('X-RateLimit-Limit', String(response.limit))
     ctx.response.header('X-RateLimit-Remaining', String(response.remaining))
+    ctx.response.header(
+      'X-RateLimit-Reset',
+      String(Math.ceil(Date.now() / 1000) + response.availableIn)
+    )
 
     return next()
   }

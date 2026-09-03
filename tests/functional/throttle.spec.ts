@@ -13,12 +13,17 @@ test.group('Rate limiting', (group) => {
 
     response.assertStatus(200)
     response.assertHeader('x-ratelimit-limit', String(throttleConfig.requests))
+    response.assertHeader('x-ratelimit-reset')
 
     const remaining = Number(response.header('x-ratelimit-remaining'))
+    const reset = Number(response.header('x-ratelimit-reset'))
     if (!Number.isInteger(remaining) || remaining >= throttleConfig.requests) {
       throw new Error(
         `Expected x-ratelimit-remaining below the limit, got "${remaining}"`
       )
+    }
+    if (!Number.isInteger(reset) || reset <= Math.floor(Date.now() / 1000)) {
+      throw new Error(`Expected a future x-ratelimit-reset, got "${reset}"`)
     }
   })
 
@@ -49,6 +54,7 @@ test.group('Rate limiting', (group) => {
 
     response.assertStatus(429)
     response.assertHeader('x-ratelimit-remaining', '0')
+    response.assertHeader('x-ratelimit-reset')
     response.assertBodyContains({
       success: false,
       statusCode: 429,
