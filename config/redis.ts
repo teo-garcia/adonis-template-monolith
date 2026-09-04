@@ -15,3 +15,9 @@ const redisConfig = defineConfig({
 })
 
 export default redisConfig
+
+declare module '@adonisjs/redis/types' {
+  export interface RedisConnections {
+    main: (typeof redisConfig.connections)['main']
+  }
+}

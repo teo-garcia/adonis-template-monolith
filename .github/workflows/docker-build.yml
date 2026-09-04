@@ -1,6 +1,10 @@
 name: Docker Build
 
 on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -41,8 +45,92 @@ jobs:
         with:
           context: .
           file: docker/Dockerfile
+          load: true
           push: false
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: |
+            adonis-template-monolith:ci
+            ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Start production dependencies
+        run: |
+          docker network create production-smoke
+          docker run --detach --name production-db \
+            --network production-smoke \
+            --env POSTGRES_USER=postgres \
+            --env POSTGRES_PASSWORD=postgres \
+            --env POSTGRES_DB=adonis_monolith \
+            --health-cmd pg_isready \
+            --health-interval 1s \
+            --health-retries 30 \
+            postgres:18-alpine
+          docker run --detach --name production-redis \
+            --network production-smoke \
+            --health-cmd "redis-cli ping" \
+            --health-interval 1s \
+            --health-retries 30 \
+            redis:alpine
+
+      - name: Wait for production dependencies
+        run: |
+          for attempt in {1..30}; do
+            database="$(docker inspect --format '{{.State.Health.Status}}' production-db)"
+            redis="$(docker inspect --format '{{.State.Health.Status}}' production-redis)"
+            if [ "$database" = healthy ] && [ "$redis" = healthy ]; then
+              exit 0
+            fi
+            sleep 1
+          done
+          docker logs production-db
+          docker logs production-redis
+          exit 1
+
+      - name: Start production image
+        run: |
+          docker run --detach --name production-app \
+            --network production-smoke \
+            --publish 127.0.0.1:43118:3333 \
+            --env NODE_ENV=production \
+            --env HOST=0.0.0.0 \
+            --env PORT=3333 \
+            --env APP_KEY=production-smoke-app-key \
+            --env 'APP_NAME=AdonisJS Monolith Template' \
+            --env APP_VERSION=1 \
+            --env API_PREFIX=/api/v1 \
+            --env LOG_LEVEL=info \
+            --env DB_CONNECTION=postgres \
+            --env DB_HOST=production-db \
+            --env DB_PORT=5432 \
+            --env DB_USER=postgres \
+            --env DB_PASSWORD=postgres \
+            --env DB_DATABASE=adonis_monolith \
+            --env DB_DEBUG=false \
+            --env REDIS_HOST=production-redis \
+            --env REDIS_PORT=6379 \
+            --env REDIS_DB=0 \
+            --env CORS_ENABLED=true \
+            --env CORS_ORIGIN=http://localhost:3000 \
+            --env METRICS_ENABLED=true \
+            --env THROTTLE_TTL=60 \
+            --env THROTTLE_LIMIT=100 \
+            --env OTEL_ENABLED=false \
+            adonis-template-monolith:ci
+
+      - name: Verify production image health
+        run: |
+          for attempt in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:43118/health/live > /dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          docker logs production-app
+          exit 1
+
+      - name: Stop production stack
+        if: always()
+        run: |
+          docker rm --force production-app production-db production-redis 2>/dev/null || true
+          docker network rm production-smoke 2>/dev/null || true

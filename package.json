@@ -5,13 +5,13 @@
   "type": "module",
   "license": "MIT",
   "author": "teo-garcia",
-  "packageManager": "pnpm@11.5.1",
+  "packageManager": "pnpm@11.25.0",
   "engines": {
     "node": ">=24",
     "pnpm": ">=9"
   },
   "scripts": {
-    "build": "pnpm docs:generate && node ace build",
+    "build": "pnpm docs:generate && node --env-file=.env.test.example ace build",
     "check": "pnpm lint:es:check && pnpm lint:ts && pnpm format:check && pnpm test",
     "commitlint": "commitlint --edit",
     "db:migrate": "node ace migration:run",
@@ -19,7 +19,7 @@
     "db:reset": "node ace migration:refresh",
     "db:seed": "node ace db:seed",
     "db:status": "node ace migration:status",
-    "docs:generate": "node ace docs:generate",
+    "docs:generate": "node --env-file=.env.test.example ace docs:generate",
     "dev": "node ace serve --hmr",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
@@ -30,10 +30,10 @@
     "prepare": "husky",
     "start": "node bin/server.js",
     "start:prod": "node build/bin/server.js",
-    "test": "node ace test",
-    "test:functional": "node ace test functional",
-    "test:unit": "node ace test unit",
-    "coverage": "c8 node ace test"
+    "test": "node --env-file=.env.test.example --env-file-if-exists=.env.test ace test",
+    "test:functional": "node --env-file=.env.test.example --env-file-if-exists=.env.test ace test functional",
+    "test:unit": "node --env-file=.env.test.example --env-file-if-exists=.env.test ace test unit",
+    "coverage": "c8 node --env-file=.env.test.example --env-file-if-exists=.env.test ace test"
   },
   "imports": {
     "#controllers/*": "./app/controllers/*.js",

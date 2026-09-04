@@ -10,6 +10,7 @@ tmp
 tests/**
 !tests/
 !tests/bootstrap.ts
+!tests/database_safety.ts
 **/*.spec.ts
 
 .vscode

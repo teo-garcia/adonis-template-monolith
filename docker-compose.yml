@@ -81,6 +81,9 @@ services:
       CORS_ENABLED: "true"
       CORS_ORIGIN: http://localhost:3000
       METRICS_ENABLED: "true"
+      THROTTLE_TTL: ${THROTTLE_TTL:-60}
+      THROTTLE_LIMIT: ${THROTTLE_LIMIT:-100}
+      OTEL_ENABLED: ${OTEL_ENABLED:-false}
     ports:
       - "${PORT:-3333}:3333"
     volumes:

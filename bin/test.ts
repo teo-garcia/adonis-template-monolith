@@ -13,6 +13,7 @@ process.env.NODE_ENV = 'test'
 
 import 'reflect-metadata'
 
+import { existsSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 
 import { Ignitor, prettyPrintError } from '@adonisjs/core'
@@ -21,7 +22,11 @@ import { configure, processCLIArgs, run } from '@japa/runner'
 import { requireTestDatabase } from '#tests/database_safety'
 
 const APP_ROOT = new URL('../', import.meta.url)
-const ENV_TEST_PATH = fileURLToPath(new URL('../.env.test', import.meta.url))
+const envTestPath = fileURLToPath(new URL('../.env.test', import.meta.url))
+const envTestExamplePath = fileURLToPath(
+  new URL('../.env.test.example', import.meta.url)
+)
+const ENV_TEST_PATH = existsSync(envTestPath) ? envTestPath : envTestExamplePath
 
 const IMPORTER = (filePath: string) => {
   if (filePath.startsWith('./') || filePath.startsWith('../')) {
