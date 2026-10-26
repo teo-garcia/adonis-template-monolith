@@ -157,8 +157,7 @@ const successEnvelopeOf = (dataSchema: unknown) => ({
 
 const readResponseSchema = (response: OpenApiResponse) => {
   const content = response.content as
-    | Record<string, { schema?: unknown }>
-    | undefined
+    Record<string, { schema?: unknown }> | undefined
 
   return content?.['application/json']?.schema
 }

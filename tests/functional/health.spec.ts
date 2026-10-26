@@ -95,8 +95,7 @@ test.group('Health endpoints', () => {
     })
 
     const components = response.body().components as
-      | { securitySchemes?: unknown }
-      | undefined
+      { securitySchemes?: unknown } | undefined
     if (components?.securitySchemes !== undefined) {
       throw new Error(
         'Unexpected OpenAPI security schemes for unauthenticated API'
@@ -109,8 +108,7 @@ test.group('Health endpoints', () => {
       response.body().paths?.['/api/v1/tasks']?.get?.responses?.['200']
         ?.content?.['application/json']?.schema
     const taskListVariants = taskListResponse?.allOf as
-      | { $ref?: string; properties?: { data?: { $ref?: string } } }[]
-      | undefined
+      { $ref?: string; properties?: { data?: { $ref?: string } } }[] | undefined
 
     if (
       taskListVariants?.[0]?.$ref !== '#/components/schemas/SuccessEnvelope'
