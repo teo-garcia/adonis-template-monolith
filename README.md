@@ -75,7 +75,8 @@ The app starts on `http://localhost:3333` and the sample API lives under
 | `pnpm lint:es`         | Lint and fix with ESLint               |
 | `pnpm lint:ts`         | TypeScript type checking               |
 | `pnpm format`          | Format with Prettier                   |
-| `pnpm db:migrate`      | Run pending Lucid migrations           |
+| `pnpm db:migrate`      | Run pending Lucid migrations locally   |
+| `pnpm db:deploy`       | Apply migrations in production         |
 | `pnpm db:rollback`     | Roll back the latest migration batch   |
 | `pnpm db:reset`        | Refresh the schema from scratch        |
 | `pnpm db:seed`         | Seed deterministic sample data         |
@@ -85,9 +86,11 @@ The app starts on `http://localhost:3333` and the sample API lives under
 
 ## Migration Safety
 
-Run Lucid migrations as a pre-deploy step with `pnpm db:migrate` before the new
+Run Lucid migrations as a pre-deploy step with `pnpm db:deploy` before the new
 application version starts. Do not run migrations from application startup,
-request handlers, seed scripts, or tests that point at a shared database.
+request handlers, seed scripts, or tests that point at a shared database. The
+production command explicitly supplies Lucid's `--force` flag; `db:migrate`
+keeps the production safeguard for development use.
 
 Production migrations must be backward-compatible with the currently running
 version. Use expand-contract changes: add nullable columns, new tables, and new
@@ -95,7 +98,7 @@ indexes before code depends on them; backfill explicitly when needed; deploy
 code that stops reading the old shape; then remove or narrow schema in a later
 release.
 
-`pnpm db:migrate` is safe to re-run when there are no pending migrations.
+`pnpm db:deploy` is safe to re-run when there are no pending migrations.
 Production rollback is a database backup restore plus compatible code, or a
 forward-fix migration. `pnpm db:rollback` is available for local development and
 carefully controlled recovery, but it is not the default production rollback
@@ -108,6 +111,10 @@ contraction with the first code release that stops using the old shape.
 ---
 
 ## Health and Observability
+
+The development and production start commands register OpenTelemetry's ESM
+loader before loading the application. Use these commands (or the equivalent
+container entrypoint) so instrumentation can patch imported modules.
 
 | Endpoint            | Description                                   |
 | ------------------- | --------------------------------------------- |
@@ -147,7 +154,7 @@ promoting beyond local development:
 - Replace `APP_KEY`, local Postgres, Redis, and pgAdmin defaults; pgAdmin is
   local-only.
 - Set `CORS_ORIGIN` to the deployed frontend origin. Do not use wildcards.
-- Production schema changes go through `pnpm db:migrate`.
+- Production schema changes go through `pnpm db:deploy`.
 - Use `docker-compose.prod.yml` for a production-like local smoke test:
   `docker compose -f docker-compose.yml -f docker-compose.prod.yml up --build`.
   Nginx is the public entry point on `HTTP_PORT`; the app, Postgres, and Redis
@@ -157,7 +164,7 @@ promoting beyond local development:
 
 Pushing a `vX.Y.Z` tag verifies the production image, then publishes semver tags
 to `ghcr.io/<owner>/<repository>` with an SBOM and provenance attestation. Run
-`pnpm db:migrate` as a separate pre-deploy step. Roll back application code by
+`pnpm db:deploy` as a separate pre-deploy step. Roll back application code by
 deploying a prior immutable image digest; keep database changes compatible with
 both versions.
 
