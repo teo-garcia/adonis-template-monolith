@@ -7,21 +7,21 @@ import {
   ATTR_SERVICE_VERSION,
 } from '@opentelemetry/semantic-conventions'
 
-const telemetryEnabled = process.env.OTEL_ENABLED !== 'false'
+import env from '#start/env'
 
 let sdk: NodeSDK | undefined
 
 export async function startTelemetry(): Promise<void> {
-  if (!telemetryEnabled || sdk) {
+  if (!env.get('OTEL_ENABLED', true) || sdk) {
     return
   }
 
-  const serviceName =
-    process.env.OTEL_SERVICE_NAME || 'adonis-template-monolith'
-  const serviceVersion = process.env.APP_VERSION || '1'
-  const endpoint =
-    process.env.OTEL_EXPORTER_OTLP_TRACES_ENDPOINT ||
+  const serviceName = env.get('OTEL_SERVICE_NAME', 'adonis-template-monolith')
+  const serviceVersion = env.get('APP_VERSION', '1')
+  const endpoint = env.get(
+    'OTEL_EXPORTER_OTLP_TRACES_ENDPOINT',
     'http://localhost:4318/v1/traces'
+  )
 
   sdk = new NodeSDK({
     resource: resourceFromAttributes({
